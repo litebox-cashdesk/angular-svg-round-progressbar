@@ -1,4 +1,4 @@
-/* angular-svg-round-progressbar@0.4.8 2016-09-18 */
+/* angular-svg-round-progressbar@0.4.8 2018-06-28 */
 (function(){
   "use strict";
 // shim layer with setTimeout fallback
@@ -317,6 +317,8 @@ angular.module('angular-svg-round-progressbar').directive('roundProgress', ['$wi
             radius:         '@',
             color:          '@',
             bgcolor:        '@',
+            txtcolor:       '@',
+            txtsize:        '@',
             stroke:         '@',
             duration:       '@',
             animation:      '@',
@@ -337,6 +339,7 @@ angular.module('angular-svg-round-progressbar').directive('roundProgress', ['$wi
             var isNested    = !element.hasClass('round-progress-wrapper');
             var svg         = isNested ? element : element.find('svg').eq(0);
             var ring        = svg.find('path').eq(0);
+            var text     = element.find('text').eq(0);
             var background  = svg.find('circle').eq(0);
             var options     = angular.copy(roundProgressConfig);
             var lastAnimationId = 0;
@@ -376,7 +379,17 @@ angular.module('angular-svg-round-progressbar').directive('roundProgress', ['$wi
                     position:        'relative',
                     paddingBottom:   responsive ? (isSemicircle ? '50%' : '100%') : 0
                 });
-
+  
+              text.css({
+                'font-size': options.txtsize,
+                'fill': options.txtcolor,
+                'text-anchor': 'middle',
+                'alignment-baseline': 'middle',
+              }).attr({
+                dx: '50%',
+                dy: '50%'
+              });
+  
                 ring.css({
                     stroke:          service.resolveColor(options.color),
                     strokeWidth:     stroke,
@@ -504,6 +517,7 @@ angular.module('angular-svg-round-progressbar').directive('roundProgress', ['$wi
             var template = [
                 '<svg class="'+ directiveName +'" xmlns="http://www.w3.org/2000/svg" role="progressbar" aria-valuemin="0">',
                     '<circle fill="none"/>',
+                    '<text dx="50%" dy="50%">{{current}}/{{max}}</text>',
                     '<path fill="none"/>',
                     '<g ng-transclude></g>',
                 '</svg>'
